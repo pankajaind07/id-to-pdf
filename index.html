@@ -2,21 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ID to PDF</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>ID to PDF</h1>
-    <p>Front aur Back ek page mein!</p>
-    <div id="upload-area">
-        <input type="file" id="frontPhoto" accept="image/*" onchange="previewImage('front')">
-        <input type="file" id="backPhoto" accept="image/*" onchange="previewImage('back')">
+    <div class="container">
+        <h1>ID to PDF</h1>
+        <p>Convert your ID's front and back into a single PDF page instantly!</p>
+        <div id="upload-area">
+            <label for="frontPhoto" class="upload-btn">Upload Front</label>
+            <input type="file" id="frontPhoto" accept="image/*" onchange="previewImage('front')" hidden>
+            <label for="backPhoto" class="upload-btn">Upload Back</label>
+            <input type="file" id="backPhoto" accept="image/*" onchange="previewImage('back')" hidden>
+        </div>
+        <div id="preview">
+            <img id="frontPreview" src="" alt="Front Preview">
+            <img id="backPreview" src="" alt="Back Preview">
+        </div>
+        <button onclick="createPDF()">Create & Download PDF</button>
     </div>
-    <div id="preview">
-        <img id="frontPreview" src="" alt="Front Preview">
-        <img id="backPreview" src="" alt="Back Preview">
-    </div>
-    <button onclick="createPDF()">Create & Download PDF</button>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="script.js"></script>
 </body>
