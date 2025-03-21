@@ -20,12 +20,12 @@
         </div>
         <div id="upload-area">
             <div class="upload-box">
-                <label for="frontPhoto" class="upload-btn">📷 Upload Front</label>
-                <input type="file" id="frontPhoto" accept="image/*" onchange="previewImage('front')" hidden>
+                <label for="frontPhoto" class="upload-btn">📷 Upload or Capture Front</label>
+                <input type="file" id="frontPhoto" accept="image/*" capture="environment" onchange="previewImage('front')" hidden>
             </div>
             <div class="upload-box">
-                <label for="backPhoto" class="upload-btn">📷 Upload Back</label>
-                <input type="file" id="backPhoto" accept="image/*" onchange="previewImage('back')" hidden>
+                <label for="backPhoto" class="upload-btn">📷 Upload or Capture Back</label>
+                <input type="file" id="backPhoto" accept="image/*" capture="environment" onchange="previewImage('back')" hidden>
             </div>
         </div>
         <div id="preview">
