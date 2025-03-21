@@ -20,22 +20,12 @@
         </div>
         <div id="upload-area">
             <div class="upload-box">
-                <label class="upload-btn">📷 Front</label>
-                <div class="upload-options">
-                    <input type="file" id="frontPhotoGallery" accept="image/*" onchange="previewImage('front', this)" hidden>
-                    <input type="file" id="frontPhotoCamera" accept="image/*" capture="environment" onchange="previewImage('front', this)" hidden>
-                    <button onclick="document.getElementById('frontPhotoGallery').click()">Gallery</button>
-                    <button onclick="document.getElementById('frontPhotoCamera').click()">Camera</button>
-                </div>
+                <label for="frontPhoto" class="upload-btn">📷 Upload Front</label>
+                <input type="file" id="frontPhoto" accept="image/*" onchange="previewImage('front')" hidden>
             </div>
             <div class="upload-box">
-                <label class="upload-btn">📷 Back</label>
-                <div class="upload-options">
-                    <input type="file" id="backPhotoGallery" accept="image/*" onchange="previewImage('back', this)" hidden>
-                    <input type="file" id="backPhotoCamera" accept="image/*" capture="environment" onchange="previewImage('back', this)" hidden>
-                    <button onclick="document.getElementById('backPhotoGallery').click()">Gallery</button>
-                    <button onclick="document.getElementById('backPhotoCamera').click()">Camera</button>
-                </div>
+                <label for="backPhoto" class="upload-btn">📷 Upload Back</label>
+                <input type="file" id="backPhoto" accept="image/*" onchange="previewImage('back')" hidden>
             </div>
         </div>
         <div id="preview">
@@ -63,7 +53,7 @@
                 <p>Email us at: <a href="mailto:ipllov@gmail.com">ipllov@gmail.com</a></p>
             </div>
         </div>
-        <footer>MADE FOR U ❤️ </footer>
+        <footer>MMADE FOR U ❤️ </footer>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="script.js"></script>
