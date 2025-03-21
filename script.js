@@ -9,13 +9,17 @@ function previewImage(type) {
     if (file) {
         const reader = new FileReader();
         reader.onload = function(e) {
-            preview.src = e.target.result;
-            if (type === 'front') frontImage = e.target.result;
-            else backImage = e.target.result;
-            // Reset rotation when new image is uploaded
-            if (type === 'front') frontRotation = 0;
-            else backRotation = 0;
-            preview.style.transform = `rotate(0deg)`;
+            const imgData = e.target.result;
+            preview.src = imgData; // Set preview source
+            if (type === 'front') {
+                frontImage = imgData;
+                frontRotation = 0; // Reset rotation
+            } else {
+                backImage = imgData;
+                backRotation = 0; // Reset rotation
+            }
+            preview.style.transform = `rotate(0deg)`; // Ensure reset
+            preview.style.display = 'block'; // Ensure image is visible
         };
         reader.readAsDataURL(file);
     }
@@ -25,11 +29,15 @@ function rotateImage(type) {
     const preview = type === 'front' ? document.getElementById('frontPreview') : document.getElementById('backPreview');
     let rotation = type === 'front' ? frontRotation : backRotation;
     
-    rotation = (rotation + 90) % 360; // Rotate 90 degrees each click
-    preview.style.transform = `rotate(${rotation}deg)`;
-    
-    if (type === 'front') frontRotation = rotation;
-    else backRotation = rotation;
+    if (preview.src && preview.src !== '') { // Check if image exists
+        rotation = (rotation + 90) % 360; // Rotate 90 degrees
+        preview.style.transform = `rotate(${rotation}deg)`;
+        
+        if (type === 'front') frontRotation = rotation;
+        else backRotation = rotation;
+    } else {
+        alert("Please upload an image first!");
+    }
 }
 
 function createPDF() {
@@ -45,7 +53,6 @@ function createPDF() {
     const imgHeight = 60;
     const pageWidth = doc.internal.pageSize.getWidth();
 
-    // Create temporary canvas to handle rotation
     const frontCanvas = document.createElement('canvas');
     const backCanvas = document.createElement('canvas');
     const frontCtx = frontCanvas.getContext('2d');
