@@ -11,6 +11,9 @@
     <div class="container">
         <h1>ID to PDF</h1>
         <p>Convert your ID's front and back into a single PDF page instantly!</p>
+        <div class="info-box">
+            <span>📸 Upload → Preview → Download</span>
+        </div>
         <div id="upload-area">
             <label for="frontPhoto" class="upload-btn">Upload Front</label>
             <input type="file" id="frontPhoto" accept="image/*" onchange="previewImage('front')" hidden>
@@ -22,6 +25,7 @@
             <img id="backPreview" src="" alt="Back Preview">
         </div>
         <button onclick="createPDF()">Create & Download PDF</button>
+        <footer>Made with ❤️ by You</footer>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="script.js"></script>
