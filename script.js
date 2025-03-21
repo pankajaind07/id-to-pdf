@@ -1,10 +1,11 @@
 let frontImage, backImage;
 let frontRotation = 0, backRotation = 0;
 
-function previewImage(type, input) {
+function previewImage(type) {
+    const fileInput = type === 'front' ? document.getElementById('frontPhoto') : document.getElementById('backPhoto');
     const preview = type === 'front' ? document.getElementById('frontPreview') : document.getElementById('backPreview');
     
-    const file = input.files[0];
+    const file = fileInput.files[0];
     if (file) {
         const reader = new FileReader();
         reader.onload = function(e) {
