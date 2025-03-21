@@ -10,16 +10,16 @@ function previewImage(type) {
         const reader = new FileReader();
         reader.onload = function(e) {
             const imgData = e.target.result;
-            preview.src = imgData; // Set preview source
+            preview.src = imgData; // Set image source
+            preview.style.display = 'block'; // Ensure visibility
             if (type === 'front') {
                 frontImage = imgData;
-                frontRotation = 0; // Reset rotation
+                frontRotation = 0;
             } else {
                 backImage = imgData;
-                backRotation = 0; // Reset rotation
+                backRotation = 0;
             }
-            preview.style.transform = `rotate(0deg)`; // Ensure reset
-            preview.style.display = 'block'; // Ensure image is visible
+            preview.style.transform = 'rotate(0deg)'; // Reset rotation
         };
         reader.readAsDataURL(file);
     }
@@ -29,7 +29,7 @@ function rotateImage(type) {
     const preview = type === 'front' ? document.getElementById('frontPreview') : document.getElementById('backPreview');
     let rotation = type === 'front' ? frontRotation : backRotation;
     
-    if (preview.src && preview.src !== '') { // Check if image exists
+    if (preview.src && preview.src !== '' && preview.src !== window.location.href) { // Check if valid image
         rotation = (rotation + 90) % 360; // Rotate 90 degrees
         preview.style.transform = `rotate(${rotation}deg)`;
         
