@@ -65,7 +65,7 @@ p {
 }
 
 .upload-btn {
-    display: block;
+    display: inline-block;
     padding: 10px 20px;
     background-color: #3498db;
     color: white;
@@ -79,28 +79,6 @@ p {
     background-color: #2980b9;
 }
 
-.upload-options {
-    margin-top: 10px;
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-}
-
-.upload-options button {
-    padding: 8px 15px;
-    background-color: #2ecc71;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.9em;
-    transition: background-color 0.3s;
-}
-
-.upload-options button:hover {
-    background-color: #27ae60;
-}
-
 #preview {
     display: flex;
     justify-content: center;
@@ -112,16 +90,15 @@ p {
 .preview-box {
     text-align: center;
     width: 100%;
-    position: relative;
 }
 
 #preview img {
     max-width: 100%;
-    width: 150px; /* Size kam kiya 250px se 150px */
+    width: 150px; /* Size kam kiya overlap ke liye */
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     display: block;
-    margin: 0 auto 15px; /* Label aur button ke saath spacing */
+    margin: 0 auto 10px; /* Label aur button ke liye space */
 }
 
 .preview-box .label {
@@ -218,7 +195,7 @@ footer {
     }
     #preview img {
         width: 100%;
-        max-width: 150px; /* Mobile pe bhi size kam */
+        max-width: 150px;
     }
     button {
         font-size: 1em;
