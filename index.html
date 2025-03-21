@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ID to PDF</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>ID to PDF</h1>
+    <p>Front aur Back ek page mein!</p>
+    <div id="upload-area">
+        <input type="file" id="frontPhoto" accept="image/*" onchange="previewImage('front')">
+        <input type="file" id="backPhoto" accept="image/*" onchange="previewImage('back')">
+    </div>
+    <div id="preview">
+        <img id="frontPreview" src="" alt="Front Preview">
+        <img id="backPreview" src="" alt="Back Preview">
+    </div>
+    <button onclick="createPDF()">Create & Download PDF</button>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
