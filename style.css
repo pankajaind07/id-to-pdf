@@ -103,3 +103,10 @@ footer {
     font-size: 0.8em;
     color: #7f8c8d;
 }
+.about-section {
+    margin: 20px 0;
+    text-align: center;
+}
+.about-section h2 {
+    color: #2c3e50;
+}
