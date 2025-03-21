@@ -56,10 +56,12 @@ p {
     justify-content: center;
     gap: 15px;
     margin-bottom: 20px;
+    flex-wrap: wrap;
 }
 
 .upload-box {
     text-align: center;
+    width: 100%;
 }
 
 .upload-btn {
@@ -82,10 +84,12 @@ p {
     justify-content: center;
     gap: 15px;
     margin-bottom: 20px;
+    flex-wrap: wrap;
 }
 
 .preview-box {
     text-align: center;
+    width: 100%;
 }
 
 #preview img {
@@ -105,6 +109,22 @@ p {
     margin-top: 5px;
     font-size: 0.85em;
     color: #7f8c8d;
+}
+
+.rotate-btn {
+    margin-top: 10px;
+    padding: 8px 15px;
+    background-color: #f1c40f;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s;
+}
+
+.rotate-btn:hover {
+    background-color: #d4ac0d;
 }
 
 button {
@@ -137,7 +157,7 @@ button:hover {
 
 .about-section, .contact-section {
     margin: 20px 0;
-    width: 100%; /* Right side se hatane ke liye */
+    width: 100%;
 }
 
 .about-section h2, .contact-section h2 {
@@ -160,4 +180,31 @@ footer {
     margin-top: 15px;
     font-size: 0.8em;
     color: #7f8c8d;
+}
+
+@media (max-width: 600px) {
+    h1 {
+        font-size: 1.8em;
+    }
+    p {
+        font-size: 0.9em;
+    }
+    .info-box {
+        font-size: 0.8em;
+    }
+    .upload-btn {
+        width: 100%;
+        padding: 12px;
+    }
+    #preview img {
+        width: 100%;
+        max-width: 300px;
+    }
+    button {
+        font-size: 1em;
+        padding: 10px;
+    }
+    .about-section h2, .contact-section h2 {
+        font-size: 1.3em;
+    }
 }
