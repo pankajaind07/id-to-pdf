@@ -1,17 +1,16 @@
 let frontImage, backImage;
 let frontRotation = 0, backRotation = 0;
 
-function previewImage(type) {
-    const fileInput = type === 'front' ? document.getElementById('frontPhoto') : document.getElementById('backPhoto');
+function previewImage(type, input) {
     const preview = type === 'front' ? document.getElementById('frontPreview') : document.getElementById('backPreview');
     
-    const file = fileInput.files[0];
+    const file = input.files[0];
     if (file) {
         const reader = new FileReader();
         reader.onload = function(e) {
             const imgData = e.target.result;
-            preview.src = imgData; // Set image source
-            preview.style.display = 'block'; // Ensure visibility
+            preview.src = imgData;
+            preview.style.display = 'block';
             if (type === 'front') {
                 frontImage = imgData;
                 frontRotation = 0;
@@ -19,7 +18,7 @@ function previewImage(type) {
                 backImage = imgData;
                 backRotation = 0;
             }
-            preview.style.transform = 'rotate(0deg)'; // Reset rotation
+            preview.style.transform = 'rotate(0deg)';
         };
         reader.readAsDataURL(file);
     }
@@ -29,8 +28,8 @@ function rotateImage(type) {
     const preview = type === 'front' ? document.getElementById('frontPreview') : document.getElementById('backPreview');
     let rotation = type === 'front' ? frontRotation : backRotation;
     
-    if (preview.src && preview.src !== '' && preview.src !== window.location.href) { // Check if valid image
-        rotation = (rotation + 90) % 360; // Rotate 90 degrees
+    if (preview.src && preview.src !== '' && preview.src !== window.location.href) {
+        rotation = (rotation + 90) % 360;
         preview.style.transform = `rotate(${rotation}deg)`;
         
         if (type === 'front') frontRotation = rotation;
