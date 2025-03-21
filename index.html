@@ -3,48 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <meta name="google-site-verification" content="BU04VkQaS5Yp_OJWzptCjNSP_tEQuJ8b_ZCEViLADdE" />
-    <title>ID to PDF</title>
+    <title>ID to PDF - Free ID to PDF Converter</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <h1>ID to PDF</h1>
-        <p>Convert your ID's front and back into a single PDF page instantly!</p>
-        <div class="info-box">
-            <span>📸 Upload → Preview → Download</span>
+        <div class="top-section">
+            <h1>ID to PDF</h1>
+            <p>Convert your ID (Aadhaar, PAN, etc.) front and back into a single PDF page instantly!</p>
+        </div>
+        <div class="middle-section">
+            <div class="info-box">
+                <span>📸 Upload your ID → See preview → Get PDF in one click!</span>
+            </div>
         </div>
         <div id="upload-area">
-            <label for="frontPhoto" class="upload-btn">Upload Front</label>
-            <input type="file" id="frontPhoto" accept="image/*" onchange="previewImage('front')" hidden>
-            <label for="backPhoto" class="upload-btn">Upload Back</label>
-            <input type="file" id="backPhoto" accept="image/*" onchange="previewImage('back')" hidden>
+            <div class="upload-box">
+                <label for="frontPhoto" class="upload-btn">📷 Upload Front</label>
+                <input type="file" id="frontPhoto" accept="image/*" onchange="previewImage('front')" hidden>
+            </div>
+            <div class="upload-box">
+                <label for="backPhoto" class="upload-btn">📷 Upload Back</label>
+                <input type="file" id="backPhoto" accept="image/*" onchange="previewImage('back')" hidden>
+            </div>
         </div>
         <div id="preview">
-            <img id="frontPreview" src="" alt="Front Preview">
-            <img id="backPreview" src="" alt="Back Preview">
+            <div class="preview-box">
+                <img id="frontPreview" src="" alt="Front Preview">
+                <span class="label">Front</span>
+            </div>
+            <div class="preview-box">
+                <img id="backPreview" src="" alt="Back Preview">
+                <span class="label">Back</span>
+            </div>
         </div>
-        <button onclick="createPDF()">Create & Download PDF</button>
-        <footer>Made with ❤️ by You</footer>
+        <button onclick="createPDF()">
+            <span class="button-icon">📄</span> Create & Download PDF
+        </button>
+        <div class="bottom-section">
+            <div class="about-section">
+                <h2>About Us</h2>
+                <p>ID to PDF is a free tool to help users convert their ID cards (Aadhaar, PAN, etc.) into a single PDF easily.</p>
+            </div>
+            <div class="contact-section">
+                <h2>Contact Us</h2>
+                <p>Email us at: <a href="mailto:ipllov@gmail.com">ipllov@gmail.com</a></p>
+            </div>
+        </div>
+        <footer>Made with ❤️ by Pankaj Aind</footer>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
-<div class="about-section">
-    <h2>About Us</h2>
-    <p>ID to PDF is a free tool created to help users convert their ID cards (Aadhaar, PAN, etc.) into a single PDF easily. Made by [Your Name].</p>
-</div>
-<div class="contact-section">
-    <h2>Contact Us</h2>
-    <p>Email us at: <a href="mailto:your.email@gmail.com">your.email@gmail.com</a></p>
-</div>
-<div class="privacy-section">
-    <h2>Privacy Policy</h2>
-    <p>We do not store your uploaded images. All data is processed locally on your device and deleted after PDF creation. No personal info is collected.</p>
-</div>
-<div class="guide-section">
-    <h2>How to Use</h2>
-    <p>1. Upload your ID's front photo. 2. Upload the back photo. 3. Click "Create & Download PDF" to get a single-page PDF instantly!</p>
-</div>
