@@ -70,14 +70,11 @@
 
             for (let file of files) {
                 if (file.type.includes('image')) {
-                    const reader = new FileReader();
-                    reader.onload = async (event) => {
-                        const imageBytes = new Uint8Array(event.target.result);
-                        const img = await pdfDoc.embedJpg(imageBytes) || await pdfDoc.embedPng(imageBytes);
-                        const page = pdfDoc.addPage([img.width, img.height]);
-                        page.drawImage(img, { x: 0, y: 0, width: img.width, height: img.height });
-                    };
-                    reader.readAsArrayBuffer(file);
+                    const imageBytes = await file.arrayBuffer();
+                    const imgType = file.type.includes('png') ? 'png' : 'jpg';
+                    const img = imgType === 'png' ? await pdfDoc.embedPng(imageBytes) : await pdfDoc.embedJpg(imageBytes);
+                    const page = pdfDoc.addPage([img.width, img.height]);
+                    page.drawImage(img, { x: 0, y: 0, width: img.width, height: img.height });
                 } else if (file.type === 'application/pdf') {
                     const existingPdfBytes = await file.arrayBuffer();
                     const existingPdfDoc = await PDFDocument.load(existingPdfBytes);
@@ -86,14 +83,12 @@
                 }
             }
 
-            setTimeout(async () => {
-                const pdfBytes = await pdfDoc.save();
-                const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = 'merged.pdf';
-                link.click();
-            }, 1000);
+            const pdfBytes = await pdfDoc.save();
+            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'merged.pdf';
+            link.click();
         }
     </script>
 </body>
