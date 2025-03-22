@@ -3,84 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Convert ID images to PDF easily with camera or gallery option.">
     <title>ID to PDF Converter</title>
+    <meta name="description" content="Convert multiple ID images or documents into a single PDF file easily and quickly.">
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
-        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
-        h1 { text-align: center; }
-        .upload-btn { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
-        input { display: none; }
-        label { 
-            padding: 15px 30px; 
-            background-color: #4CAF50; 
-            color: white; 
-            border: none; 
-            cursor: pointer; 
-            transition: 0.3s;
-        }
-        label:hover { background-color: #45a049; }
-        .preview { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
-        img { max-width: 150px; height: auto; border: 1px solid #ddd; border-radius: 5px; }
-        button { 
-            display: block; 
-            width: 100%; 
-            padding: 15px; 
-            background-color: #007BFF; 
-            color: white; 
-            border: none; 
-            cursor: pointer; 
-            transition: 0.3s; 
-            margin-top: 20px;
-        }
-        button:hover { background-color: #0056b3; }
-        footer { text-align: center; margin: 30px 0; }
-        footer a { color: #007BFF; text-decoration: none; }
-        footer a:hover { text-decoration: underline; }
+        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 20px; }
+        h1, h2 { text-align: center; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .upload-area { border: 2px dashed #ccc; padding: 30px; text-align: center; cursor: pointer; }
+        .upload-area:hover { border-color: #007BFF; }
+        .file-list { margin-top: 20px; }
+        .file-item { padding: 10px; border: 1px solid #ccc; margin-bottom: 5px; display: flex; justify-content: space-between; }
+        button { display: block; margin: 20px auto; padding: 10px 20px; background: #007BFF; color: #fff; border: none; cursor: pointer; }
+        button:hover { background: #0056b3; }
     </style>
 </head>
 <body>
-<div class="container">
-    <h1>ID to PDF Converter</h1>
-    <div class="upload-btn">
-        <label for="camera">📷 Camera</label>
-        <input type="file" id="camera" accept="image/*" capture="camera" multiple>
-        <label for="gallery">🖼️ Gallery</label>
-        <input type="file" id="gallery" accept="image/*" multiple>
+    <div class="container">
+        <h1>ID to PDF Converter</h1>
+        <div class="upload-area" id="upload-area">Click or drag & drop files here</div>
+        <div class="file-list" id="file-list"></div>
+        <button onclick="generatePDF()">Generate PDF</button>
     </div>
-    <div class="preview" id="preview"></div>
-    <button onclick="generatePDF()">Generate PDF</button>
-</div>
 
-<footer>
-    <a href="privacy.html">Privacy Policy</a> | 
-    <a href="tos.html">Terms of Service</a> | 
-    <a href="contact.html">Contact Us</a> | 
-    <a href="about.html">About Us</a>
-</footer>
-
-<script>
-    const preview = document.getElementById('preview');
-
-    function handleFiles(files) {
-        preview.innerHTML = '';
-        Array.from(files).forEach(file => {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const img = document.createElement('img');
-                img.src = e.target.result;
-                preview.appendChild(img);
-            };
-            reader.readAsDataURL(file);
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <script>
+        const uploadArea = document.getElementById('upload-area');
+        const fileList = document.getElementById('file-list');
+        let files = [];
+        
+        uploadArea.addEventListener('click', () => {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.multiple = true;
+            input.accept = 'image/*,application/pdf';
+            input.onchange = (e) => handleFiles(e.target.files);
+            input.click();
         });
-    }
 
-    document.getElementById('camera').addEventListener('change', (e) => handleFiles(e.target.files));
-    document.getElementById('gallery').addEventListener('change', (e) => handleFiles(e.target.files));
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#007BFF';
+        });
 
-    function generatePDF() {
-        alert('PDF generation will be added later!');
-    }
-</script>
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.borderColor = '#ccc';
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            handleFiles(e.dataTransfer.files);
+        });
+        
+        function handleFiles(selectedFiles) {
+            for (let file of selectedFiles) {
+                files.push(file);
+                const item = document.createElement('div');
+                item.className = 'file-item';
+                item.textContent = file.name;
+                fileList.appendChild(item);
+            }
+        }
+        
+        async function generatePDF() {
+            const { PDFDocument } = PDFLib;
+            const pdfDoc = await PDFDocument.create();
+
+            for (let file of files) {
+                if (file.type.includes('image')) {
+                    const reader = new FileReader();
+                    reader.onload = async (event) => {
+                        const imageBytes = new Uint8Array(event.target.result);
+                        const img = await pdfDoc.embedJpg(imageBytes) || await pdfDoc.embedPng(imageBytes);
+                        const page = pdfDoc.addPage([img.width, img.height]);
+                        page.drawImage(img, { x: 0, y: 0, width: img.width, height: img.height });
+                    };
+                    reader.readAsArrayBuffer(file);
+                } else if (file.type === 'application/pdf') {
+                    const existingPdfBytes = await file.arrayBuffer();
+                    const existingPdfDoc = await PDFDocument.load(existingPdfBytes);
+                    const copiedPages = await pdfDoc.copyPages(existingPdfDoc, existingPdfDoc.getPageIndices());
+                    copiedPages.forEach((page) => pdfDoc.addPage(page));
+                }
+            }
+
+            setTimeout(async () => {
+                const pdfBytes = await pdfDoc.save();
+                const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'merged.pdf';
+                link.click();
+            }, 1000);
+        }
+    </script>
 </body>
 </html>
