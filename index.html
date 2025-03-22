@@ -3,59 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ID to PDF - Free ID to PDF Converter</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <meta name="description" content="Convert ID images to PDF easily with camera or gallery option.">
+    <title>ID to PDF Converter</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        h1 { text-align: center; }
+        .upload-btn { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
+        input { display: none; }
+        label { 
+            padding: 15px 30px; 
+            background-color: #4CAF50; 
+            color: white; 
+            border: none; 
+            cursor: pointer; 
+            transition: 0.3s;
+        }
+        label:hover { background-color: #45a049; }
+        .preview { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+        img { max-width: 150px; height: auto; border: 1px solid #ddd; border-radius: 5px; }
+        button { 
+            display: block; 
+            width: 100%; 
+            padding: 15px; 
+            background-color: #007BFF; 
+            color: white; 
+            border: none; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            margin-top: 20px;
+        }
+        button:hover { background-color: #0056b3; }
+        footer { text-align: center; margin: 30px 0; }
+        footer a { color: #007BFF; text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <div class="top-section">
-            <h1>ID to PDF</h1>
-            <p>Convert your ID (Aadhaar, PAN, etc.) front and back into a single PDF page instantly!</p>
-        </div>
-        <div class="middle-section">
-            <div class="info-box">
-                <span>📸 Upload your ID → See preview → Get PDF in one click!</span>
-            </div>
-        </div>
-        <div id="upload-area">
-            <div class="upload-box">
-                <label for="frontPhoto" class="upload-btn">📷 Upload Front</label>
-                <input type="file" id="frontPhoto" accept="image/*" onchange="previewImage('front')" hidden>
-            </div>
-            <div class="upload-box">
-                <label for="backPhoto" class="upload-btn">📷 Upload Back</label>
-                <input type="file" id="backPhoto" accept="image/*" onchange="previewImage('back')" hidden>
-            </div>
-        </div>
-        <div id="preview">
-            <div class="preview-box">
-                <img id="frontPreview" src="" alt="Front Preview">
-                <span class="label">Front</span>
-                <button class="rotate-btn" onclick="rotateImage('front')">🔄 Rotate</button>
-            </div>
-            <div class="preview-box">
-                <img id="backPreview" src="" alt="Back Preview">
-                <span class="label">Back</span>
-                <button class="rotate-btn" onclick="rotateImage('back')">🔄 Rotate</button>
-            </div>
-        </div>
-        <button onclick="createPDF()">
-            <span class="button-icon">📄</span> Create & Download PDF
-        </button>
-        <div class="bottom-section">
-            <div class="about-section">
-                <h2>About Us</h2>
-                <p>ID to PDF is a free tool to help users convert their ID cards (Aadhaar, PAN, etc.) into a single PDF easily.</p>
-            </div>
-            <div class="contact-section">
-                <h2>Contact Us</h2>
-                <p>Email us at: <a href="mailto:ipllov@gmail.com">ipllov@gmail.com</a></p>
-            </div>
-        </div>
-        <footer>MMADE FOR U ❤️ </footer>
+<div class="container">
+    <h1>ID to PDF Converter</h1>
+    <div class="upload-btn">
+        <label for="camera">📷 Camera</label>
+        <input type="file" id="camera" accept="image/*" capture="camera" multiple>
+        <label for="gallery">🖼️ Gallery</label>
+        <input type="file" id="gallery" accept="image/*" multiple>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="script.js"></script>
+    <div class="preview" id="preview"></div>
+    <button onclick="generatePDF()">Generate PDF</button>
+</div>
+
+<footer>
+    <a href="privacy.html">Privacy Policy</a> | 
+    <a href="tos.html">Terms of Service</a> | 
+    <a href="contact.html">Contact Us</a> | 
+    <a href="about.html">About Us</a>
+</footer>
+
+<script>
+    const preview = document.getElementById('preview');
+
+    function handleFiles(files) {
+        preview.innerHTML = '';
+        Array.from(files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                preview.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    document.getElementById('camera').addEventListener('change', (e) => handleFiles(e.target.files));
+    document.getElementById('gallery').addEventListener('change', (e) => handleFiles(e.target.files));
+
+    function generatePDF() {
+        alert('PDF generation will be added later!');
+    }
+</script>
 </body>
 </html>
