@@ -8,24 +8,27 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            margin-top: 50px;
+            margin-top: 20px;
         }
         .container {
-            max-width: 600px;
+            max-width: 700px;
             margin: 0 auto;
         }
-        input, button {
-            margin: 10px;
+        input, button, select {
+            margin: 8px;
             padding: 5px;
+        }
+        label {
+            margin-right: 5px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>ID to PDF Converter</h1>
-        <p>Upload at least 4 images/documents to create a PDF</p>
+        <p>Upload 1 to 4 images/documents to create a PDF</p>
         
-        <input type="file" id="fileInput" multiple accept="image/*,application/pdf" />
+        <input type="file" id="fileInput" multiple accept="image/*" />
         <br>
         <label for="pageSize">Page Size:</label>
         <select id="pageSize">
@@ -39,6 +42,15 @@
             <option value="portrait">Portrait</option>
             <option value="landscape">Landscape</option>
         </select>
+        <br>
+        <label for="margin">Margin (mm):</label>
+        <input type="number" id="margin" value="10" min="0" max="50" />
+        <br>
+        <label for="addPageNumbers">Add Page Numbers:</label>
+        <input type="checkbox" id="addPageNumbers" checked />
+        <br>
+        <label for="title">PDF Title:</label>
+        <input type="text" id="title" placeholder="Enter PDF title" />
         <br>
         <button onclick="createPDF()">Create PDF</button>
         <p id="status"></p>
@@ -54,9 +66,16 @@
             const status = document.getElementById('status');
             const pageSize = document.getElementById('pageSize').value;
             const orientation = document.getElementById('orientation').value;
+            const margin = parseInt(document.getElementById('margin').value);
+            const addPageNumbers = document.getElementById('addPageNumbers').checked;
+            const title = document.getElementById('title').value || "Untitled PDF";
 
-            if (files.length < 4) {
-                status.innerText = "Please upload at least 4 files!";
+            if (files.length === 0) {
+                status.innerText = "Please upload at least 1 file!";
+                return;
+            }
+            if (files.length > 4) {
+                status.innerText = "Maximum 4 files allowed!";
                 return;
             }
 
@@ -67,15 +86,27 @@
                 format: pageSize
             });
 
+            // Add title on first page
+            doc.setFontSize(16);
+            doc.text(title, margin, margin);
+
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
                 const imgData = await fileToImageData(file);
 
                 if (i > 0) doc.addPage();
-                doc.addImage(imgData, 'JPEG', 10, 10, 190, 0); // Auto height
+                const pageHeight = doc.internal.pageSize.height;
+                const pageWidth = doc.internal.pageSize.width;
+                doc.addImage(imgData, 'JPEG', margin, margin + 10, pageWidth - 2 * margin, 0);
+
+                // Add page numbers if checked
+                if (addPageNumbers) {
+                    doc.setFontSize(10);
+                    doc.text(`Page ${i + 1}`, pageWidth - margin - 10, pageHeight - margin);
+                }
             }
 
-            doc.save('output.pdf');
+            doc.save(`${title}.pdf`);
             status.innerText = "PDF created successfully!";
         }
 
