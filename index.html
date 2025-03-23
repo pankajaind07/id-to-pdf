@@ -4,107 +4,143 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDF Converter</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        .btn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        input[type="file"] {
+            margin: 10px;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>PDF Converter</h1>
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="privacy-policy.html">Privacy Policy</a>
-            <a href="terms.html">Terms & Conditions</a>
-            <a href="disclaimer.html">Disclaimer</a>
-            <a href="contact.html">Contact Us</a>
-        </nav>
-    </header>
 
-    <main>
-        <section>
-            <h2>Convert ID to PDF</h2>
-            <input type="file" id="fileInput" multiple>
-            <button onclick="convertToPDF()">Convert to PDF</button>
-        </section>
+    <h1>PDF Converter - Merge, Edit, Compress</h1>
+    
+    <h3>Choose PDF File to Work With</h3>
+    <input type="file" id="fileInput" multiple accept="application/pdf" />
+    
+    <br><br>
 
-        <!-- PDF Tools Section -->
-        <section>
-            <h2>PDF Tools</h2>
-            <div class="tool-section">
-                <div class="tool-box">
-                    <h3>Convert</h3>
-                    <button onclick="convertToPDF()">PDF to Word</button>
-                    <button onclick="convertToPDF()">Word to PDF</button>
-                </div>
+    <!-- Convert Button -->
+    <button class="btn" onclick="convertPDF()">Convert to PDF</button>
 
-                <div class="tool-box">
-                    <h3>Merge</h3>
-                    <button onclick="mergePDF()">Merge PDF</button>
-                </div>
+    <!-- Merge Button -->
+    <button class="btn" onclick="mergePDF()">Merge PDFs</button>
 
-                <div class="tool-box">
-                    <h3>Compress</h3>
-                    <button onclick="compressPDF()">Compress PDF</button>
-                </div>
+    <!-- Compress Button -->
+    <button class="btn" onclick="compressPDF()">Compress PDF</button>
 
-                <div class="tool-box">
-                    <h3>Edit</h3>
-                    <button onclick="editPDF()">Edit PDF</button>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <p>&copy; 2025 PDF Converter. All rights reserved.</p>
-        <a href="privacy-policy.html">Privacy Policy</a> |
-        <a href="terms.html">Terms & Conditions</a> |
-        <a href="disclaimer.html">Disclaimer</a> |
-        <a href="contact.html">Contact Us</a>
-    </footer>
+    <!-- Edit Button -->
+    <button class="btn" onclick="editPDF()">Edit PDF</button>
 
     <script>
-        // PDF Convert to PDF Function
-        function convertToPDF() {
+        // PDF Convert Functionality (Convert Image to PDF)
+        async function convertPDF() {
             const files = document.getElementById('fileInput').files;
             if (files.length === 0) {
-                alert('Please select files.');
+                alert('Please select a PDF file.');
+                return;
+            }
+            const file = files[0];
+            const reader = new FileReader();
+            reader.onload = async function (e) {
+                const existingPdfBytes = e.target.result;
+                const pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
+                const pdfBytes = await pdfDoc.save();
+                const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'converted.pdf';
+                link.click();
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        // PDF Merge Functionality
+        async function mergePDF() {
+            const files = document.getElementById('fileInput').files;
+            if (files.length < 2) {
+                alert('Please select at least two PDF files to merge.');
                 return;
             }
 
-            const pdf = new jsPDF();
-
-            Array.from(files).forEach((file, index) => {
+            const pdfDoc = await PDFLib.PDFDocument.create();
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = new Image();
-                    img.src = e.target.result;
-                    img.onload = function() {
-                        const imgWidth = 210;
-                        const imgHeight = img.height * imgWidth / img.width;
-                        if (index > 0) pdf.addPage();
-                        pdf.addImage(img, 'JPEG', 0, 0, imgWidth, imgHeight);
-                        if (index === files.length - 1) {
-                            pdf.save('converted.pdf');
-                        }
-                    };
+                reader.onload = async function (e) {
+                    const existingPdfBytes = e.target.result;
+                    const existingPdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
+                    const copiedPages = await pdfDoc.copyPages(existingPdfDoc, existingPdfDoc.getPageIndices());
+                    copiedPages.forEach((page) => pdfDoc.addPage(page));
+
+                    if (i === files.length - 1) {
+                        const pdfBytes = await pdfDoc.save();
+                        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                        const link = document.createElement('a');
+                        link.href = URL.createObjectURL(blob);
+                        link.download = 'merged.pdf';
+                        link.click();
+                    }
                 };
-                reader.readAsDataURL(file);
-            });
+                reader.readAsArrayBuffer(file);
+            }
         }
 
-        // Placeholder functions for other tools (merge, compress, edit)
-        function mergePDF() {
-            alert('PDF Merge functionality is not yet implemented.');
+        // PDF Compress Functionality (This would need a third-party service)
+        async function compressPDF() {
+            alert('PDF compression functionality is not yet implemented. You can use external APIs for compression.');
+            // Example: Use a PDF compression API for this.
         }
 
-        function compressPDF() {
-            alert('PDF Compress functionality is not yet implemented.');
-        }
+        // PDF Edit Functionality (Add Text to PDF)
+        async function editPDF() {
+            const files = document.getElementById('fileInput').files;
+            if (files.length === 0) {
+                alert('Please select a PDF file to edit.');
+                return;
+            }
 
-        function editPDF() {
-            alert('PDF Edit functionality is not yet implemented.');
+            const file = files[0];
+            const reader = new FileReader();
+            reader.onload = async function (e) {
+                const existingPdfBytes = e.target.result;
+                const pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
+                const page = pdfDoc.getPages()[0];
+                const { width, height } = page.getSize();
+                page.drawText('Edited Text!', {
+                    x: width / 2 - 50,
+                    y: height / 2,
+                    size: 30,
+                    color: PDFLib.rgb(0, 0, 0),
+                });
+
+                const pdfBytes = await pdfDoc.save();
+                const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'edited.pdf';
+                link.click();
+            };
+            reader.readAsArrayBuffer(file);
         }
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 </body>
 </html>
