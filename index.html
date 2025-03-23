@@ -3,111 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ID to PDF Converter</title>
-    <link rel="icon" href="./favicon.png" type="image/png">
-
-    <meta name="description" content="Convert multiple ID images or documents into a single PDF file easily and quickly.">
+    <title>PDF Converter</title>
+    <link rel="icon" href="./favicon.png" type="image/png">  <!-- Favicon added -->
     <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 20px; }
-        h1, h2 { text-align: center; }
-        .container { max-width: 900px; margin: 0 auto; }
-        .upload-area { border: 2px dashed #ccc; padding: 30px; text-align: center; cursor: pointer; }
-        .upload-area:hover { border-color: #007BFF; }
-        .file-list { margin-top: 20px; }
-        .file-item { padding: 10px; border: 1px solid #ccc; margin-bottom: 5px; display: flex; justify-content: space-between; }
-        button { display: block; margin: 20px auto; padding: 10px 20px; background: #007BFF; color: #fff; border: none; cursor: pointer; }
-        button:hover { background: #0056b3; }
-        .nav { text-align: center; margin: 20px 0; }
-        .nav a { margin: 0 15px; text-decoration: none; color: #007BFF; }
-        .nav a:hover { text-decoration: underline; }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        img {
+            max-width: 200px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            color: #666;
+        }
     </style>
 </head>
 <body>
-    <div class="logo-container">
-    <img src="./logo.png" alt="PDF Converter Logo" style="width: 200px; height: auto;">
-</div>
-
     <div class="container">
-        <h1>ID to PDF Converter</h1>
-        <div class="nav">
-            <a href="index.html">Home</a>
-            <a href="about.html">About</a>
-            <a href="contact.html">Contact</a>
-            <a href="privacy.html">Privacy Policy</a>
-            <a href="tos.html">Terms of Service</a>
-            <a href="id-to-pdf-easy-way.html">Articles</a>
-        </div>
-        
-        <div class="upload-area" id="upload-area">Click or drag & drop files here</div>
-        <div class="file-list" id="file-list"></div>
-        <button onclick="generatePDF()">Generate PDF</button>
+        <img src="./logo.png" alt="PDF Converter Logo">  <!-- Logo added -->
+        <h1>Welcome to PDF Converter</h1>
+        <p>Convert your files easily and quickly!</p>
+        <!-- Add your PDF conversion form or content here -->
     </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
-    <script>
-        const uploadArea = document.getElementById('upload-area');
-        const fileList = document.getElementById('file-list');
-        let files = [];
-        
-        uploadArea.addEventListener('click', () => {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.multiple = true;
-            input.accept = 'image/*,application/pdf';
-            input.onchange = (e) => handleFiles(e.target.files);
-            input.click();
-        });
-
-        uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadArea.style.borderColor = '#007BFF';
-        });
-
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.style.borderColor = '#ccc';
-        });
-
-        uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            handleFiles(e.dataTransfer.files);
-        });
-        
-        function handleFiles(selectedFiles) {
-            for (let file of selectedFiles) {
-                files.push(file);
-                const item = document.createElement('div');
-                item.className = 'file-item';
-                item.textContent = file.name;
-                fileList.appendChild(item);
-            }
-        }
-        
-        async function generatePDF() {
-            const { PDFDocument } = PDFLib;
-            const pdfDoc = await PDFDocument.create();
-
-            for (let file of files) {
-                if (file.type.includes('image')) {
-                    const imageBytes = await file.arrayBuffer();
-                    const imgType = file.type.includes('png') ? 'png' : 'jpg';
-                    const img = imgType === 'png' ? await pdfDoc.embedPng(imageBytes) : await pdfDoc.embedJpg(imageBytes);
-                    const page = pdfDoc.addPage([img.width, img.height]);
-                    page.drawImage(img, { x: 0, y: 0, width: img.width, height: img.height });
-                } else if (file.type === 'application/pdf') {
-                    const existingPdfBytes = await file.arrayBuffer();
-                    const existingPdfDoc = await PDFDocument.load(existingPdfBytes);
-                    const copiedPages = await pdfDoc.copyPages(existingPdfDoc, existingPdfDoc.getPageIndices());
-                    copiedPages.forEach((page) => pdfDoc.addPage(page));
-                }
-            }
-
-            const pdfBytes = await pdfDoc.save();
-            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'merged.pdf';
-            link.click();
-        }
-    </script>
 </body>
 </html>
