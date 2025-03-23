@@ -36,32 +36,29 @@
             padding: 10px;
             text-align: center;
         }
+        .logo {
+            width: 150px;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
 
-    <h1>PDF Converter - Merge, Edit, Compress</h1>
+    <img class="logo" src="https://your-website.com/path-to-your-logo.png" alt="PDF Converter Logo">
+
+    <h1>PDF Converter - Combine Images and Docs</h1>
     
-    <h3>Choose PDF File to Work With</h3>
-    <input type="file" id="fileInput" multiple accept="application/pdf" />
-    
+    <h3>Choose Up to 4 Images or Documents to Combine into a PDF</h3>
+    <input type="file" id="fileInput" multiple accept=".jpg, .jpeg, .png, .doc, .docx, .pdf" />
+
     <br><br>
 
     <!-- Convert Button -->
-    <button class="btn" onclick="convertPDF()">Convert to PDF</button>
-
-    <!-- Merge Button -->
-    <button class="btn" onclick="mergePDF()">Merge PDFs</button>
-
-    <!-- Compress Button -->
-    <button class="btn" onclick="compressPDF()">Compress PDF</button>
-
-    <!-- Edit Button -->
-    <button class="btn" onclick="editPDF()">Edit PDF</button>
+    <button class="btn" onclick="convertToPDF()">Create PDF</button>
 
     <div class="section">
         <h2>About Us</h2>
-        <p>We provide a simple tool to convert, merge, compress, and edit your PDF files.</p>
+        <p>We provide a simple tool to convert your images and documents into one PDF file. Upload up to 4 files and we will combine them for you.</p>
     </div>
 
     <div class="section">
@@ -71,12 +68,12 @@
 
     <div class="section">
         <h2>Terms & Conditions</h2>
-        <p>By using this website, you agree to our terms of service, and understand that we do not take responsibility for the content of the files you upload.</p>
+        <p>By using this website, you agree to our terms of service. We do not take responsibility for the content of the files you upload.</p>
     </div>
 
     <div class="section">
         <h2>Contact Us</h2>
-        <p>If you have any questions or issues, feel free to contact us at <strong>support@pdfconverter.com</strong></p>
+        <p>If you have any questions, contact us at <strong>support@pdfconverter.com</strong></p>
     </div>
 
     <footer>
@@ -84,33 +81,11 @@
     </footer>
 
     <script>
-        // PDF Convert Functionality (Convert Image to PDF)
-        async function convertPDF() {
+        // PDF Conversion (Combine images and docs into PDF)
+        async function convertToPDF() {
             const files = document.getElementById('fileInput').files;
-            if (files.length === 0) {
-                alert('Please select a PDF file.');
-                return;
-            }
-            const file = files[0];
-            const reader = new FileReader();
-            reader.onload = async function (e) {
-                const existingPdfBytes = e.target.result;
-                const pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
-                const pdfBytes = await pdfDoc.save();
-                const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = 'converted.pdf';
-                link.click();
-            };
-            reader.readAsArrayBuffer(file);
-        }
-
-        // PDF Merge Functionality
-        async function mergePDF() {
-            const files = document.getElementById('fileInput').files;
-            if (files.length < 2) {
-                alert('Please select at least two PDF files to merge.');
+            if (files.length === 0 || files.length > 4) {
+                alert('Please select up to 4 images or documents.');
                 return;
             }
 
@@ -118,61 +93,44 @@
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
                 const reader = new FileReader();
+                
                 reader.onload = async function (e) {
-                    const existingPdfBytes = e.target.result;
-                    const existingPdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
-                    const copiedPages = await pdfDoc.copyPages(existingPdfDoc, existingPdfDoc.getPageIndices());
-                    copiedPages.forEach((page) => pdfDoc.addPage(page));
+                    const fileBytes = e.target.result;
+
+                    if (file.type.startsWith('image')) {
+                        // Image to PDF
+                        const img = await pdfDoc.embedJpg(fileBytes);
+                        const page = pdfDoc.addPage();
+                        const { width, height } = page.getSize();
+                        page.drawImage(img, {
+                            x: 0,
+                            y: 0,
+                            width: width,
+                            height: height,
+                        });
+                    } else if (file.type.startsWith('application/pdf')) {
+                        // PDF to PDF (merge)
+                        const existingPdfBytes = fileBytes;
+                        const existingPdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
+                        const copiedPages = await pdfDoc.copyPages(existingPdfDoc, existingPdfDoc.getPageIndices());
+                        copiedPages.forEach((page) => pdfDoc.addPage(page));
+                    } else if (file.type.startsWith('application/vnd.openxmlformats-officedocument.wordprocessingml.document')) {
+                        // DOCX to PDF (for demo, you can replace it with actual DOCX handling library)
+                        alert('DOCX to PDF conversion is not supported in this demo.');
+                    }
 
                     if (i === files.length - 1) {
                         const pdfBytes = await pdfDoc.save();
                         const blob = new Blob([pdfBytes], { type: 'application/pdf' });
                         const link = document.createElement('a');
                         link.href = URL.createObjectURL(blob);
-                        link.download = 'merged.pdf';
+                        link.download = 'combined.pdf';
                         link.click();
                     }
                 };
+                
                 reader.readAsArrayBuffer(file);
             }
-        }
-
-        // PDF Compress Functionality (This would need a third-party service)
-        async function compressPDF() {
-            alert('PDF compression functionality is not yet implemented. You can use external APIs for compression.');
-            // Example: Use a PDF compression API for this.
-        }
-
-        // PDF Edit Functionality (Add Text to PDF)
-        async function editPDF() {
-            const files = document.getElementById('fileInput').files;
-            if (files.length === 0) {
-                alert('Please select a PDF file to edit.');
-                return;
-            }
-
-            const file = files[0];
-            const reader = new FileReader();
-            reader.onload = async function (e) {
-                const existingPdfBytes = e.target.result;
-                const pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
-                const page = pdfDoc.getPages()[0];
-                const { width, height } = page.getSize();
-                page.drawText('Edited Text!', {
-                    x: width / 2 - 50,
-                    y: height / 2,
-                    size: 30,
-                    color: PDFLib.rgb(0, 0, 0),
-                });
-
-                const pdfBytes = await pdfDoc.save();
-                const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = 'edited.pdf';
-                link.click();
-            };
-            reader.readAsArrayBuffer(file);
         }
     </script>
 
