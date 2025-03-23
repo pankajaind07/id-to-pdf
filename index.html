@@ -4,42 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDF Converter</title>
-    <link rel="icon" href="./favicon.png" type="image/png">  <!-- Favicon added -->
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-            background-color: #f2f2f2;
-        }
-        .container {
-            max-width: 800px;
-            margin: 50px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        img {
-            max-width: 200px;
-            height: auto;
-            margin-bottom: 20px;
-        }
-        h1 {
-            color: #333;
-        }
-        p {
-            color: #666;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body>
-    <div class="container">
-        <img src="./logo.png" alt="PDF Converter Logo">  <!-- Logo added -->
-        <h1>Welcome to PDF Converter</h1>
-        <p>Convert your files easily and quickly!</p>
-        <!-- Add your PDF conversion form or content here -->
-    </div>
+    <header>
+        <h1>PDF Converter</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="privacy-policy.html">Privacy Policy</a>
+            <a href="terms.html">Terms & Conditions</a>
+            <a href="disclaimer.html">Disclaimer</a>
+            <a href="contact.html">Contact Us</a>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h2>Convert ID to PDF</h2>
+            <input type="file" id="fileInput" multiple>
+            <button onclick="convertToPDF()">Convert to PDF</button>
+        </section>
+
+        <section>
+            <h2>PDF Tools</h2>
+            <div class="tool-section">
+                <a href="#" class="tool">PDF to Word</a>
+                <a href="#" class="tool">PDF Merge</a>
+                <a href="#" class="tool">PDF Compress</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 PDF Converter. All rights reserved.</p>
+        <a href="privacy-policy.html">Privacy Policy</a> |
+        <a href="terms.html">Terms & Conditions</a> |
+        <a href="disclaimer.html">Disclaimer</a> |
+        <a href="contact.html">Contact Us</a>
+    </footer>
+
+    <script>
+        function convertToPDF() {
+            const files = document.getElementById('fileInput').files;
+            if (files.length === 0) {
+                alert('Please select files.');
+                return;
+            }
+
+            const pdf = new jsPDF();
+
+            Array.from(files).forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.src = e.target.result;
+                    img.onload = function() {
+                        const imgWidth = 210;  
+                        const imgHeight = img.height * imgWidth / img.width;
+                        if (index > 0) pdf.addPage();
+                        pdf.addImage(img, 'JPEG', 0, 0, imgWidth, imgHeight);
+                        if (index === files.length - 1) {
+                            pdf.save('converted.pdf');
+                        }
+                    };
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </body>
 </html>
