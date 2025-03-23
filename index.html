@@ -26,12 +26,30 @@
             <button onclick="convertToPDF()">Convert to PDF</button>
         </section>
 
+        <!-- PDF Tools Section -->
         <section>
             <h2>PDF Tools</h2>
             <div class="tool-section">
-                <a href="#" class="tool">PDF to Word</a>
-                <a href="#" class="tool">PDF Merge</a>
-                <a href="#" class="tool">PDF Compress</a>
+                <div class="tool-box">
+                    <h3>Convert</h3>
+                    <button onclick="convertToPDF()">PDF to Word</button>
+                    <button onclick="convertToPDF()">Word to PDF</button>
+                </div>
+
+                <div class="tool-box">
+                    <h3>Merge</h3>
+                    <button onclick="mergePDF()">Merge PDF</button>
+                </div>
+
+                <div class="tool-box">
+                    <h3>Compress</h3>
+                    <button onclick="compressPDF()">Compress PDF</button>
+                </div>
+
+                <div class="tool-box">
+                    <h3>Edit</h3>
+                    <button onclick="editPDF()">Edit PDF</button>
+                </div>
             </div>
         </section>
     </main>
@@ -45,6 +63,7 @@
     </footer>
 
     <script>
+        // PDF Convert to PDF Function
         function convertToPDF() {
             const files = document.getElementById('fileInput').files;
             if (files.length === 0) {
@@ -60,7 +79,7 @@
                     const img = new Image();
                     img.src = e.target.result;
                     img.onload = function() {
-                        const imgWidth = 210;  
+                        const imgWidth = 210;
                         const imgHeight = img.height * imgWidth / img.width;
                         if (index > 0) pdf.addPage();
                         pdf.addImage(img, 'JPEG', 0, 0, imgWidth, imgHeight);
@@ -71,6 +90,19 @@
                 };
                 reader.readAsDataURL(file);
             });
+        }
+
+        // Placeholder functions for other tools (merge, compress, edit)
+        function mergePDF() {
+            alert('PDF Merge functionality is not yet implemented.');
+        }
+
+        function compressPDF() {
+            alert('PDF Compress functionality is not yet implemented.');
+        }
+
+        function editPDF() {
+            alert('PDF Edit functionality is not yet implemented.');
         }
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
